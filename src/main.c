@@ -5,19 +5,27 @@
 #include "drivers/gpio.h"
 #include "include.h"
 #include "hal-errors.h"
+#include "system/reset-reason.h"
 
 
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-static void Error_Handler(void)
+void HardFault_Handler(void)
 {
-  __disable_irq();
-  while (1)
-  {
-  }
+    //TODO - add debug info here
+    __disable_irq();
+
+    while (1)
+    {
+
+    }
 }
+
+
+void SysTick_Handler(void)
+{
+    HAL_IncTick();
+}
+
+
 
 
 static Error App_Initialize() {
@@ -31,7 +39,7 @@ static Error App_Initialize() {
     if (error != ErrorNone) {
         return error;
     }
-    
+
     error = Trace_Initialize();
     if (error != ErrorNone) {
         return error;
@@ -53,8 +61,16 @@ int main(void) {
 
     Error error = App_Initialize();
     if (error != ErrorNone) {
-        Error_Handler();
+        HardFault_Handler();
     }
+
+    TargetResetReason reason;
+    error = TargetResetReason_Get(&reason);
+    if (error != ErrorNone){
+      Trace_PrintLine("Unable to retrieve Reset Reason");
+    }
+
+    Trace_PrintLine("Reset Reason: %s", TargetResetReason_GetName(reason));
 
     const char* msg = "Yippie-ki-yay mother flipper";
     while(1) {
@@ -62,29 +78,14 @@ int main(void) {
         HAL_Delay(1000);
         error = Gpio_Toggle(GpioPin_Led);
         if (error != ErrorNone ) {
-            Trace_Print("Error Gpio no good");
+            Trace_PrintLine("Error Gpio no good");
         }
 
-        Trace_Print(msg);
-
+        Trace_PrintLine(msg);
+    
     }
 
 
     return 0;
-}
-
-void HardFault_Handler(void)
-{
-    //TODO - add debug info here
-  while (1)
-  {
-
-  }
-}
-
-
-void SysTick_Handler(void)
-{
-  HAL_IncTick();
 }
 

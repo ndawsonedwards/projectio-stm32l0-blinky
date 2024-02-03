@@ -7,7 +7,7 @@
  * @param Set Returns true if the reset flag was set
  * @return Error Indication of success or failure
  */
-Error TargetResetReason_Query(TargetResetReasonFlag Flag, bool *Set)
+Error TargetResetReason_Query(TargetResetReason Flag, bool *Set)
 {
 
     switch (Flag)
@@ -17,7 +17,6 @@ Error TargetResetReason_Query(TargetResetReasonFlag Flag, bool *Set)
 			break;
 
         case TargetResetReasonFlag_PowerOn:
-
 			*Set = (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST) == SET);
 			break;
 
@@ -26,7 +25,6 @@ Error TargetResetReason_Query(TargetResetReasonFlag Flag, bool *Set)
 			break;
 
         case TargetResetReasonFlag_Watchdog:
-
 			*Set = (( __HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST) == SET) || (__HAL_RCC_GET_FLAG(RCC_FLAG_WWDGRST) == SET) );
 			break;
 
@@ -37,6 +35,38 @@ Error TargetResetReason_Query(TargetResetReasonFlag Flag, bool *Set)
         default:
         	return ErrorBadParameter;
     }
+
+    return ErrorNone;
+}
+
+/**
+ * @brief Returns the reset reasom
+ * @note This returns on teh first detected set flag. There may be additional flags set
+ * 
+ * @param Reason Reason to query
+ * @return Error Indication of success or failure
+ */
+Error TargetResetReason_Get(TargetResetReason *Reason)
+{
+
+    TargetResetReason flag;
+    for (flag = 0; flag < TARGET_RESET_REASON_COUNT; flag++)
+    {
+        bool IsSet = false;
+        Error Error = TargetResetReason_Query(flag, &IsSet);
+        if (Error != ErrorNone)
+        {
+            continue;
+        }
+        
+        if ( IsSet)
+        {
+            *Reason = flag;
+            return ErrorNone;
+        }
+    } 
+
+    TargetResetReason_ClearFlags();
 
     return ErrorNone;
 }

@@ -19,4 +19,14 @@ Error Trace_Initialize();
  */
 Error Trace_Print(const char *Format,...);
 
+/**
+ * @brief Sends message appended with newline to the trace
+ * 
+ * @param Format Formatted message
+ * @param ...  args
+ * @return Error 
+ */
+Error Trace_PrintLine(const char *Format,...);
+
+
 #endif //_TRACE_H_

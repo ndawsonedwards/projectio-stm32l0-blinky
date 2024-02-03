@@ -1,4 +1,4 @@
-# projectio-stm32l0-blinky
+# PlatformIO-stm32l0-blinky
 Simple project to test out PlatformIO with ST Nucleo-L031k6
 
 

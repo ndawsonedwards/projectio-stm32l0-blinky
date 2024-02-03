@@ -9,11 +9,12 @@
  */
 typedef enum 
 {
+
     /**
-     * @brief Reset triggered by the physical reset pin
+     * @brief Reset caused by software reset
      * 
      */
-    TargetResetReasonFlag_PinReset = 0,
+    TargetResetReasonFlag_SoftwareReset = 0,
 
     /**
      * @brief Reset caused due to brown out
@@ -22,39 +23,48 @@ typedef enum
     TargetResetReasonFlag_PowerOn,
 
     /**
-     * @brief Reset caused by software reset
-     * 
-     */
-    TargetResetReasonFlag_SoftwareReset,
-
-    /**
      * @brief Reset caused by the watchdog
      * 
      */
     TargetResetReasonFlag_Watchdog,
 
     /**
+     * @brief Reset triggered by the physical reset pin
+     * 
+     */
+    TargetResetReasonFlag_PinReset,
+
+    /**
      * @brief Reset caused by illegal entry into sleep state
      * 
      */
     TargetResetReasonFlag_IllegalSleep,
-
+    
     /**
      * @brief Number of supported reset flags
      * 
      */
-    TARGET_RESET_REASON_FLAG_COUNT
+    TARGET_RESET_REASON_COUNT
 
-}TargetResetReasonFlag;
+}TargetResetReason;
 
 /**
- * @brief Queries the target to see if a reset flag was set
+ * @brief Queries the target to see if a specific reset flag was set
  * 
- * @param Flag Flag to query
+ * @param Reason Reason to query
  * @param Set Returns true if the reset flag was set
  * @return Error Indication of success or failure
  */
-Error TargetResetReason_Query(TargetResetReasonFlag Flag, bool *Set);
+Error TargetResetReason_Query(TargetResetReason Reason, bool *Set);
+
+/**
+ * @brief Returns the reset reasom
+ * 
+ * @param Reason Reason to query
+ * @return Error Indication of success or failure
+ */
+Error TargetResetReason_Get(TargetResetReason *Reason);
+
 
 /**
  * @brief Clears out reset reason flags
@@ -67,12 +77,12 @@ Error TargetResetReason_ClearFlags();
 /**
  * @brief Returns the human readible name of the reset flag
  * 
- * @param Flag reset flag
+ * @param Reason reset flag
  * @return const char* 
  */
-static inline const char * TargetResetReason_GetName(TargetResetReasonFlag Flag)
+static inline const char * TargetResetReason_GetName(TargetResetReason Reason)
 {
-    switch(Flag)
+    switch(Reason)
     {
         case TargetResetReasonFlag_PinReset:
             return "Pin Reset";

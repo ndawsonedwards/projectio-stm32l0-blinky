@@ -4,21 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 
-// #define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 
-// /**
-//   * @brief  Retargets the C library printf function to the USART.
-//   * @param  None
-//   * @retval None
-//   */
-// PUTCHAR_PROTOTYPE
-// {
-//   /* e.g. write a character to the USART1 and Loop until the end of transmission */
-//     GuardianTrace_ClaimMutex();
-//     AtomosByteStream_WriteByte(_TraceStream,(uint8_t)ch);
-//     GuardianTimer_ReleaseMutex();
-//     return ch;
-// }
 static bool _initialized = false;
 
 static UART_HandleTypeDef _uart;
@@ -45,18 +31,21 @@ Error Trace_Initialize() {
     return ErrorNone;
 }
 
-Error Trace_Print(const char *Format,...)
-{
+
+Error Trace_PrintLine(const char *Format,...) {
+
     if ( ! _initialized )
     {
         return ErrorBadState;
     }
 
-    va_list Arguments;
-    va_start(Arguments,Format);
+    va_list args;
+    va_start(args,Format);
 
     char buffer[256] = {0};
-    vsnprintf(buffer, sizeof(buffer), Format, Arguments);
+    vsnprintf(buffer, sizeof(buffer), Format, args);
+    snprintf(buffer, sizeof(buffer), "%s\n", buffer);
+
     int size = strlen(buffer);
     if (size == 0 ) {
         return ErrorOperationCancelled;
@@ -68,7 +57,38 @@ Error Trace_Print(const char *Format,...)
         return HalErrors_GetError(result);
     }
 
-    va_end(Arguments);
+    va_end(args);
+
+    return ErrorNone;
+
+}
+
+
+
+Error Trace_Print(const char *Format,...)
+{
+    if ( ! _initialized )
+    {
+        return ErrorBadState;
+    }
+
+    va_list args;
+    va_start(args,Format);
+
+    char buffer[256] = {0};
+    vsnprintf(buffer, sizeof(buffer), Format, args);
+    int size = strlen(buffer);
+    if (size == 0 ) {
+        return ErrorOperationCancelled;
+    }
+    size = (size < sizeof(buffer)) ? size : sizeof(buffer);
+
+    HAL_StatusTypeDef result =  HAL_UART_Transmit(&_uart, (uint8_t*) buffer, size, 1000 );
+    if (result != HAL_OK) {
+        return HalErrors_GetError(result);
+    }
+
+    va_end(args);
 
     return ErrorNone;
 }
