@@ -1,10 +1,15 @@
-#ifndef _HARDWARE_PIN_H_
-#define _HARDWARE_PIN_H_
+#ifndef _GPIO_PIN_H_
+#define _GPIO_PIN_H_
 
 #include "stm32l0xx_hal.h"
 #include "errors.h"
 
-#include "gpio-pins.h"
+
+typedef enum {
+
+    GpioPin_Led
+
+}GpioPin;
 
 
 /**
@@ -15,7 +20,7 @@
  * @param pinNumber pin value of the enumerated pin
  * @return Error
  */
-Error HardwarePins_GetPinContext(GpioPin pin, GPIO_TypeDef ** port, uint16_t * pinNumber );
+Error GpioPin_GetPinContext(GpioPin pin, GPIO_TypeDef ** port, uint16_t * pinNumber );
 
 
 #endif

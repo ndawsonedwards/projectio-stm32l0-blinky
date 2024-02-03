@@ -1,6 +1,6 @@
-#include "gpio.h"
-#include "hardware-pin.h"
+#include "pin-description.h"
 #include "hal-errors.h"
+#include "hardware-pin.h"
 
 
 Error Gpio_Initialize() {
@@ -27,7 +27,7 @@ Error Gpio_Write(GpioPin pin, GPIO_PinState state) {
     GPIO_TypeDef *port;
     uint16_t pinNumber;
 
-    Error error = HardwarePins_GetPinContext(pin, &port, &pinNumber);
+    Error error = GpioPin_GetPinContext(pin, &port, &pinNumber);
     if (error != ErrorNone ){
         return error;
     }
@@ -45,7 +45,7 @@ Error Gpio_Read(GpioPin pin, GPIO_PinState * state) {
 
     GPIO_TypeDef *port;
     uint16_t pinNumber;
-    Error error = HardwarePins_GetPinContext(pin, &port, &pinNumber);
+    Error error = GpioPin_GetPinContext(pin, &port, &pinNumber);
     if (error != ErrorNone ){
         return error;
     }
@@ -59,7 +59,7 @@ Error Gpio_Toggle(GpioPin pin) {
 
     GPIO_TypeDef *port;
     uint16_t pinNumber;
-    Error error = HardwarePins_GetPinContext(pin, &port, &pinNumber);
+    Error error = GpioPin_GetPinContext(pin, &port, &pinNumber);
     if (error != ErrorNone ){
         return error;
     }

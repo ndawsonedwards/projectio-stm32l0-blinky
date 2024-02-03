@@ -2,7 +2,7 @@
 #define _GPIO_H_
 
 #include "include.h"
-#include "gpio-pins.h"
+#include "hardware-pin.h"
 #include "stm32l0xx_hal.h"
 
 
