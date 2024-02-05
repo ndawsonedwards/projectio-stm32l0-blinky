@@ -15,4 +15,6 @@ See https://platformio.org/ for more details
    - RCC was configured to sourcing HSI as it was hung up on PLL lock before I realied it was due to SysTick issue aove. 
   - First impressions of just getting working peripherals running on target is that I'd rather just use "STM32 VS Code Extension" extension, built by STM32. Getting a GPIO toggle and Uart TX working with ST designed extension took way less time since peripheral code generation is built it. 
 
-  Now that it is up and running, I hope the 3rd-party library integration really sets itself apart. 
+ - Final Thoughts
+   - Perhaps PlatformIO would be a better solution for othe boards/platforms, such as RP2040/ESP32, but it falls short against integrated stm32 support.
+   - No more activity is expected on this repo
